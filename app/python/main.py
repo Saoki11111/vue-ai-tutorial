@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from machine_learning.titanic import PredictOnAPI
 
 app = FastAPI()
 
@@ -18,6 +19,13 @@ class SchemaOfTitanicFeaturesRequest(BaseModel):
   Parch: int
   SibSp: int
 
+class SchemaOfSurvivalProbabilityResponse(BaseModel):
+  survival_probability: float
+
 @app.post('/api/titanic', response_model=SchemaOfTitanicFeaturesRequest)
 def derive_score(request_body: SchemaOfTitanicFeaturesRequest):
-  return request_body
+  # 辞書形式に変更
+  features_dict = request_body.__dict__
+  # **<辞書オブジェクト>とすることで引数として自動的にバラして与えることが可能
+  survival_probability = PredictOnAPI.derive_survival_probability(**features_dict)
+  return {'survival_probability': survival_probability}
