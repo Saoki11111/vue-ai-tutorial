@@ -3,15 +3,22 @@ version: "3.3"
 services:
   node:
     container_name: node
-
     build:
       context: .
       dockerfile: ./docker/node/Dockerfile
-
     ports:
       - 3000:3000
-
     volumes:
       - ./app/node:/app
-
     tty: true
+
+  python:
+    container_name: python
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+    ports:
+      - 5001:5001
+    tty: true
+    volumes:
+      - ./app/python/:/app
